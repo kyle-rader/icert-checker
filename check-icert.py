@@ -4,8 +4,25 @@ import sys
 from pathlib import Path
 from datetime import datetime
 
+from_phone = sys.argv[1]
+account_sid = sys.argv[2]
+auth_token = sys.argv[3]
+to_phones = sys.argv[4:]
+
 ICERT_URL = "https://icert.doleta.gov/"
 OLD_TEXT_FILENAME = "old_icert_text.txt"
+
+def send_alert(to_phone: str):
+    client = Client(account_sid, auth_token)
+    message = client.messages \
+                .create(
+                    body=f"The contents of \n{ICERT_URL}\nhas changed!",
+                    from_=from_phone,
+                    to=to_phone
+                )
+    
+    print(f"Sent message to {to_phone}\n{message.sid}")
+
 
 def check_icert() -> int:
 
@@ -37,6 +54,8 @@ def check_icert() -> int:
             print(icert_response.text)
 
             # TODO: Send Twilio SMS
+            for phone in to_phones:
+                send_alert(phone)
         else:
             print("no change.")
 
