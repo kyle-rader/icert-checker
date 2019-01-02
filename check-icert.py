@@ -32,8 +32,7 @@ def check_icert() -> int:
     icert_response = requests.get(ICERT_URL)
 
     if icert_response.status_code != 200:
-        print(f"Error: Failed to GET {ICERT_URL}")
-        return 1
+        print(f"Warning: Failed to GET {ICERT_URL} - status code {icert_response.status_code}")
     
     # We got it, so let's clean up the text
     icert_text = icert_response.text \
